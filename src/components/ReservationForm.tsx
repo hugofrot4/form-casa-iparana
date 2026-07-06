@@ -88,7 +88,7 @@ export default function ReservationForm() {
   return (
     <section
       id="form-section"
-      className="flex min-h-dvh flex-col justify-center bg-areia px-5 py-16 pb-20 snap-start sm:py-24 sm:pb-[100px]"
+      className="flex min-h-dvh flex-col justify-center bg-areia px-5 py-16 pb-20 sm:py-24 sm:pb-[100px]"
     >
       <h2 className="m-0 mb-3 text-center font-display text-[clamp(1.8rem,6vw,2.4rem)] font-bold text-mar italic">
         Verifique a disponibilidade

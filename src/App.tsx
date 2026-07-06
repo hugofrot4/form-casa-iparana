@@ -1,5 +1,6 @@
 import Hero from "./components/Hero";
 import ReservationForm from "./components/ReservationForm";
+import LocationMap from "./components/LocationMap";
 import Footer from "./components/Footer";
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <>
       <Hero />
       <ReservationForm />
+      <LocationMap />
       <Footer />
     </>
   );
