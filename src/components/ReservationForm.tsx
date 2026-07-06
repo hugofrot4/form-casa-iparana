@@ -6,23 +6,29 @@ const WHATSAPP_NUMBER = "558599975766";
 
 type FormState = {
   nome: string;
-  data: string;
+  checkinData: string;
+  checkinHora: string;
+  checkoutData: string;
+  checkoutHora: string;
   pessoas: string;
   evento: string;
 };
 
-type FormErrors = Partial<Record<keyof FormState, boolean>>;
+type FormErrors = Partial<Record<"nome" | "checkin" | "checkout" | "pessoas" | "evento", boolean>>;
 
 const initialForm: FormState = {
   nome: "",
-  data: "",
+  checkinData: "",
+  checkinHora: "",
+  checkoutData: "",
+  checkoutHora: "",
   pessoas: "",
   evento: "",
 };
 
-function formatDateBR(isoDate: string) {
+function formatDateTimeBR(isoDate: string, time: string) {
   const [year, month, day] = isoDate.split("-");
-  return `${day}/${month}/${year}`;
+  return `${day}/${month}/${year} às ${time}`;
 }
 
 const inputClasses =
@@ -51,7 +57,8 @@ export default function ReservationForm() {
     const nextErrors: FormErrors = {};
 
     if (!form.nome.trim()) nextErrors.nome = true;
-    if (!form.data) nextErrors.data = true;
+    if (!form.checkinData || !form.checkinHora) nextErrors.checkin = true;
+    if (!form.checkoutData || !form.checkoutHora) nextErrors.checkout = true;
 
     const pessoasVal = parseInt(form.pessoas, 10);
     if (!form.pessoas || Number.isNaN(pessoasVal) || pessoasVal < 1) {
@@ -73,11 +80,12 @@ export default function ReservationForm() {
     }
 
     const nome = form.nome.trim();
-    const dataFormatada = formatDateBR(form.data);
+    const entrada = formatDateTimeBR(form.checkinData, form.checkinHora);
+    const saida = formatDateTimeBR(form.checkoutData, form.checkoutHora);
     const pessoas = form.pessoas;
     const evento = form.evento.trim();
 
-    const mensagem = `Olá! Gostaria de verificar a disponibilidade da Casa de Praia Iparana. \u{1F60A}\n\n\u{1F464} Nome: ${nome}\n\u{1F4C5} Data pretendida: ${dataFormatada}\n\u{1F465} Número de pessoas: ${pessoas}\n\u{1F389} Tipo de evento: ${evento}\n\nAguardo retorno para confirmarmos os detalhes!`;
+    const mensagem = `Olá! Gostaria de verificar a disponibilidade da Casa de Praia Iparana. \u{1F60A}\n\n\u{1F464} Nome: ${nome}\n\u{1F4C5} Entrada: ${entrada}\n\u{1F4C5} Saída: ${saida}\n\u{1F465} Número de pessoas: ${pessoas}\n\u{1F389} Tipo de evento: ${evento}\n\nAguardo retorno para confirmarmos os detalhes!`;
 
     const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(mensagem)}`;
 
@@ -126,22 +134,64 @@ export default function ReservationForm() {
           )}
         </div>
 
-        <div className={`mb-[22px] ${fieldClasses(!!errors.data)}`}>
-          <label htmlFor="data" className="mb-2 block text-sm font-bold tracking-[0.2px] text-mar">
-            Data pretendida
+        <div className={`mb-[22px] ${fieldClasses(!!errors.checkin)}`}>
+          <label htmlFor="checkin-data" className="mb-2 block text-sm font-bold tracking-[0.2px] text-mar">
+            Data e hora de entrada
           </label>
-          <input
-            type="date"
-            id="data"
-            name="bday"
-            autoComplete="off"
-            className={inputClasses}
-            value={form.data}
-            onChange={(e) => updateField("data", e.target.value)}
-          />
-          {errors.data && (
+          <div className="flex gap-2.5">
+            <input
+              type="date"
+              id="checkin-data"
+              name="checkin-data"
+              autoComplete="off"
+              className={inputClasses}
+              value={form.checkinData}
+              onChange={(e) => updateField("checkinData", e.target.value)}
+            />
+            <input
+              type="time"
+              id="checkin-hora"
+              name="checkin-hora"
+              autoComplete="off"
+              className={`${inputClasses} max-w-[120px]`}
+              value={form.checkinHora}
+              onChange={(e) => updateField("checkinHora", e.target.value)}
+            />
+          </div>
+          {errors.checkin && (
             <span className="mt-1.5 block text-[13px] font-medium text-coral">
-              Selecione a data pretendida.
+              Selecione a data e hora de entrada.
+            </span>
+          )}
+        </div>
+
+        <div className={`mb-[22px] ${fieldClasses(!!errors.checkout)}`}>
+          <label htmlFor="checkout-data" className="mb-2 block text-sm font-bold tracking-[0.2px] text-mar">
+            Data e hora de saída
+          </label>
+          <div className="flex gap-2.5">
+            <input
+              type="date"
+              id="checkout-data"
+              name="checkout-data"
+              autoComplete="off"
+              className={inputClasses}
+              value={form.checkoutData}
+              onChange={(e) => updateField("checkoutData", e.target.value)}
+            />
+            <input
+              type="time"
+              id="checkout-hora"
+              name="checkout-hora"
+              autoComplete="off"
+              className={`${inputClasses} max-w-[120px]`}
+              value={form.checkoutHora}
+              onChange={(e) => updateField("checkoutHora", e.target.value)}
+            />
+          </div>
+          {errors.checkout && (
+            <span className="mt-1.5 block text-[13px] font-medium text-coral">
+              Selecione a data e hora de saída.
             </span>
           )}
         </div>
