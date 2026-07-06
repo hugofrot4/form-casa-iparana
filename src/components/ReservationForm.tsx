@@ -80,7 +80,14 @@ export default function ReservationForm() {
     const mensagem = `Olá! Gostaria de verificar a disponibilidade da Casa de Praia Iparana. \u{1F60A}\n\n\u{1F464} Nome: ${nome}\n\u{1F4C5} Data pretendida: ${dataFormatada}\n\u{1F465} Número de pessoas: ${pessoas}\n\u{1F389} Tipo de evento: ${evento}\n\nAguardo retorno para confirmarmos os detalhes!`;
 
     const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(mensagem)}`;
-    window.open(url, "_blank");
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
     setSuccess(true);
   }
